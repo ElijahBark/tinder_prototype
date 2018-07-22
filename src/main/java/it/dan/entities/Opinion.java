@@ -1,9 +1,9 @@
 package it.dan.entities;
 
 public class Opinion {
-    public enum PersonLike {
-        Like, Dislike, Noinfo
-    }
+    private String who;
+    private String whom;
+    private Boolean like;
 
     public String getWho() {
         return who;
@@ -21,28 +21,18 @@ public class Opinion {
         this.whom = whom;
     }
 
-    private String who;
-    private String whom;
-    private  PersonLike like;
 
-
-
-    public PersonLike getLike() {
+    public Boolean getLike() {
         return like;
     }
 
-    public void setOpinionLike() {
-        this.like = PersonLike.Like;
-    }
-
-    public void setOpinionDisLike() {
-        this.like = PersonLike.Dislike;
+    public void setOpinionLike(boolean like) {
+        this.like = like;
     }
 
     public Opinion(String who, String whom) {
         this.who = who;
         this.whom = whom;
-        this.like = PersonLike.Noinfo;
     }
     public Opinion() {
     }

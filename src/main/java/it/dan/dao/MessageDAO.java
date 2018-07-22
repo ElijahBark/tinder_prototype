@@ -10,19 +10,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageDAO implements InterfaceDAO<Message> {
+public class MessageDAO {
 
 
-    public List<Message> getConversation(Object login, Object userLogin) {
+    public List<Message> getConversation(String login, String userLogin) {
         List<Message> messages = new ArrayList<>();
 
-        String sql = "SELECT * FROM message WHERE (who='" + login + "' AND whom ='"+userLogin+"') OR (who='" + userLogin + "' AND whom ='"+login+"')";
+        String sql = "SELECT * FROM message_barkov WHERE (who=? AND whom =?) OR (who=? AND whom = ?)";
 
         try (
                 Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet rSet = statement.executeQuery();
         ) {
+            statement.setString(1, login);
+            statement.setString(2, userLogin);
+            statement.setString(3, userLogin);
+            statement.setString(4, login);
+            ResultSet rSet = statement.executeQuery();
             while (rSet.next()) {
                 Message message = new Message();
 
@@ -42,9 +46,8 @@ public class MessageDAO implements InterfaceDAO<Message> {
     }
 
 
-    @Override
     public void save(Message message) {
-        String sql = "INSERT INTO message(who, whom, message_text, message_date) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO message_barkov(who, whom, message_text, message_date) VALUES(?,?,?,?)";
 
         try (Connection connection = ConnectionToDB.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);) {
@@ -57,22 +60,5 @@ public class MessageDAO implements InterfaceDAO<Message> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-    }
-
-    @Override
-    public void update(Message obj) {
-
-    }
-
-    @Override
-    public Message get(Object pk) {
-        return null;
-    }
-
-    @Override
-    public void delete(Object pk) {
-
     }
 }

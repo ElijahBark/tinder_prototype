@@ -5,6 +5,20 @@ public class Person {
     private String name;
     private String photoUrl;
     private String password;
+    private Boolean sex;
+
+    public Person() {
+
+    }
+
+    public Person(String login, String name, String photoUrl, Boolean sex, String password) {
+        this.login = login;
+        this.name = name;
+        this.photoUrl = photoUrl;
+        this.sex = sex;
+        this.password = password;
+    }
+
 
     public Boolean getSex() {
         return sex;
@@ -13,20 +27,6 @@ public class Person {
     public void setSex(Boolean sex) {
         this.sex = sex;
     }
-
-    private Boolean sex;
-
-
-
-
-    public Person(String login, String name, String photoUrl, Boolean sex) {
-        this.login = login;
-        this.name = name;
-        this.photoUrl = photoUrl;
-        this.sex = sex;
-    }
-
-
 
     public String getName() {
         return name;
@@ -50,9 +50,6 @@ public class Person {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public Person() {
     }
 
     public String getPassword() {

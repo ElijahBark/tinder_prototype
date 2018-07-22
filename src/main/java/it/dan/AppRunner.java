@@ -2,6 +2,7 @@ package it.dan;
 
 import it.dan.entities.Person;
 import it.dan.servlets.*;
+import it.dan.utilits.FreeMarkerObject;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -47,10 +48,12 @@ public class AppRunner {
         Server serv = new Server(8008);
         ServletContextHandler context = new ServletContextHandler();
 
-        ServletHolder userHolder = new ServletHolder(new UserServlet());
+        FreeMarkerObject freeMarkerObject = new FreeMarkerObject();
+
+        ServletHolder userHolder = new ServletHolder(new UserServlet(freeMarkerObject));
         ServletHolder testHolder = new ServletHolder(new StaticServlet());
-        ServletHolder likedtHolder = new ServletHolder(new LikedServlet());
-        ServletHolder chatHolder = new ServletHolder(new ChatServlet());
+        ServletHolder likedHolder = new ServletHolder(new LikedServlet(freeMarkerObject));
+        ServletHolder chatHolder = new ServletHolder(new ChatServlet(freeMarkerObject));
         ServletHolder loginHolder = new ServletHolder(new LoginServlet());
 
         Filter loginFilter = new LoginFilter();
@@ -59,7 +62,7 @@ public class AppRunner {
 
         context.addServlet(userHolder, "/users");
         context.addServlet(testHolder, "/static/*");
-        context.addServlet(likedtHolder, "/liked");
+        context.addServlet(likedHolder, "/liked");
         context.addServlet(chatHolder, "/chat/*");
         context.addServlet(loginHolder, "/login");
 

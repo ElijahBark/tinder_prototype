@@ -1,9 +1,5 @@
-package it.dan;
+package it.dan.utilits;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 import it.dan.AppRunner;
 import it.dan.dao.OpinionDAO;
 import it.dan.dao.PersonDAO;
@@ -11,12 +7,11 @@ import it.dan.entities.Opinion;
 import it.dan.entities.Person;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static it.dan.AppRunner.persons;
 import static it.dan.AppRunner.userLogin;
@@ -38,23 +33,6 @@ public class Utilits {
             }
         }
         return newPersons;
-    }
-
-    public static void freeMarkerRun(Map<String, Object> model, String pageName, Writer out) throws IOException {
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
-        cfg.setDirectoryForTemplateLoading(new File("resources"));
-        cfg.setDefaultEncoding("UTF-8");
-        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        cfg.setLogTemplateExceptions(false);
-        cfg.setWrapUncheckedExceptions(true);
-
-        Template template = cfg.getTemplate(pageName);
-        try {
-            template.process(model, out);
-
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void downloadCookies(HttpServletRequest req) {

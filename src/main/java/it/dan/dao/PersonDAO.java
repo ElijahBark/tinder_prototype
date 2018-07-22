@@ -10,19 +10,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonDAO implements InterfaceDAO<Person> {
+public class PersonDAO {
 
-    @Override
     public void save(Person person) {
-        String sql = "INSERT INTO person(login, name, photo_url) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO person_barkov(login, name, photo_url, sex, password) VALUES(?,?,?,?,?)";
 
         try (Connection connection = ConnectionToDB.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);) {
             statement.setString(1, person.getLogin());
             statement.setString(2, person.getName());
-            statement.setString(3, String.valueOf(person.getPhotoUrl()));
+            statement.setString(3, person.getPhotoUrl());
             statement.setBoolean(4, person.getSex());
-
+            statement.setString(5,person.getPassword());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -32,22 +31,23 @@ public class PersonDAO implements InterfaceDAO<Person> {
     public List<Person> getOppositeSexPersonList(Person user) {
         List<Person> persons = new ArrayList<>();
 
-        Boolean bool = !user.getSex();
-
-
-        String sql = "SELECT * FROM person WHERE sex='" + bool + "'";
+        String sql = "SELECT * FROM person_barkov WHERE sex= ?";
 
         try (
                 Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet rSet = statement.executeQuery();
+
         ) {
+            statement.setBoolean(1, !user.getSex());
+            ResultSet rSet = statement.executeQuery();
             while (rSet.next()) {
                 Person person = new Person();
 
                 person.setName(rSet.getString("name"));
                 person.setPhotoUrl(rSet.getString("photo_url"));
                 person.setLogin(rSet.getString("login"));
+                person.setPassword(rSet.getString("password"));
+                person.setSex(!user.getSex());
 
 
                 persons.add(person);
@@ -58,44 +58,31 @@ public class PersonDAO implements InterfaceDAO<Person> {
         return persons;
     }
 
-    @Override
-    public void update(Person person) {
 
-    }
-
-    @Override
     public Person get(Object login) {
 
         Person person = new Person();
 
-        String sql = "SELECT * FROM person WHERE login='" + login + "'";
+        String sql = "SELECT * FROM person_barkov WHERE login=?";
 
         try (
-                Connection        connection  = ConnectionToDB.getConnection();
-                PreparedStatement statement  = connection.prepareStatement(sql);
-                ResultSet rSet = statement.executeQuery();
-        )
-        {
-            while ( rSet.next() )
-            {
+                Connection connection = ConnectionToDB.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+        ) {
+            statement.setString(1, String.valueOf(login));
+            ResultSet rSet = statement.executeQuery();
+            while (rSet.next()) {
                 person.setLogin(rSet.getString("login"));
                 person.setName(rSet.getString("name"));
                 person.setPhotoUrl(rSet.getString("photo_url"));
                 person.setSex(rSet.getBoolean("sex"));
-                person.setPassword(rSet.getString("user_pass"));
+                person.setPassword(rSet.getString("password"));
 
                 return person;
             }
-        }
-        catch ( SQLException e )
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Override
-    public void delete(Object pk) {
-
     }
 }
