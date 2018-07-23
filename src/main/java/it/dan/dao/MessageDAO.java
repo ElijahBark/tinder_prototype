@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageDAO {
+    private Connection connection;
 
+    public MessageDAO(Connection connection) {
+        this.connection = connection;
+    }
 
     public List<Message> getConversation(String login, String userLogin) {
         List<Message> messages = new ArrayList<>();
@@ -19,7 +23,6 @@ public class MessageDAO {
         String sql = "SELECT * FROM message_barkov WHERE (who=? AND whom =?) OR (who=? AND whom = ?)";
 
         try (
-                Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         ) {
             statement.setString(1, login);
@@ -49,12 +52,13 @@ public class MessageDAO {
     public void save(Message message) {
         String sql = "INSERT INTO message_barkov(who, whom, message_text, message_date) VALUES(?,?,?,?)";
 
-        try (Connection connection = ConnectionToDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);) {
+        try (
+                PreparedStatement statement = connection.prepareStatement(sql);
+        ) {
             statement.setString(1, message.getWho());
             statement.setString(2, message.getWhom());
             statement.setString(3, message.getText());
-            statement.setLong(4,message.getDate());
+            statement.setLong(4, message.getDate());
 
             statement.executeUpdate();
         } catch (SQLException e) {

@@ -11,17 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonDAO {
+    private Connection connection;
+
+    public PersonDAO(Connection connection) {
+
+        this.connection = connection;
+    }
 
     public void save(Person person) {
         String sql = "INSERT INTO person_barkov(login, name, photo_url, sex, password) VALUES(?,?,?,?,?)";
 
-        try (Connection connection = ConnectionToDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);) {
+        try (
+                PreparedStatement statement = connection.prepareStatement(sql);
+        ) {
             statement.setString(1, person.getLogin());
             statement.setString(2, person.getName());
             statement.setString(3, person.getPhotoUrl());
             statement.setBoolean(4, person.getSex());
-            statement.setString(5,person.getPassword());
+            statement.setString(5, person.getPassword());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,9 +41,7 @@ public class PersonDAO {
         String sql = "SELECT * FROM person_barkov WHERE sex= ?";
 
         try (
-                Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
-
         ) {
             statement.setBoolean(1, !user.getSex());
             ResultSet rSet = statement.executeQuery();
@@ -66,7 +71,6 @@ public class PersonDAO {
         String sql = "SELECT * FROM person_barkov WHERE login=?";
 
         try (
-                Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         ) {
             statement.setString(1, String.valueOf(login));

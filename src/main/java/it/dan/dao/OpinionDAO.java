@@ -1,6 +1,7 @@
 package it.dan.dao;
 
 import it.dan.entities.Opinion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,12 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OpinionDAO {
+    private Connection connection;
+
+    public OpinionDAO(Connection connection) {
+        this.connection = connection;
+    }
 
     public void save(Opinion opinion) {
         String sql = "INSERT INTO opinion_barkov(who, whom, person_like) VALUES(?,?,?)";
 
-        try (Connection connection = ConnectionToDB.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);) {
+        try (
+                PreparedStatement statement = connection.prepareStatement(sql);
+        ) {
             statement.setString(1, opinion.getWho());
             statement.setString(2, opinion.getWhom());
             statement.setBoolean(3, opinion.getLike());
@@ -32,10 +39,9 @@ public class OpinionDAO {
         String sql = "SELECT * FROM opinion_barkov WHERE who=? AND person_like =?";
 
         try (
-                Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         ) {
-            statement.setString(1,login);
+            statement.setString(1, login);
             statement.setBoolean(2, true);
             ResultSet rSet = statement.executeQuery();
             while (rSet.next()) {
@@ -59,10 +65,9 @@ public class OpinionDAO {
         String sql = "SELECT * FROM opinion_barkov WHERE who=?";
 
         try (
-                Connection connection = ConnectionToDB.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         ) {
-            statement.setString(1,login);
+            statement.setString(1, login);
             ResultSet rSet = statement.executeQuery();
             while (rSet.next()) {
                 Opinion opinion = new Opinion();

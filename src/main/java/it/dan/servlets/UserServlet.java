@@ -4,7 +4,7 @@ import it.dan.dao.OpinionDAO;
 import it.dan.entities.Opinion;
 import it.dan.entities.Person;
 import it.dan.utilits.FreeMarkerObject;
-import it.dan.utilits.Utilits;
+import it.dan.utilits.UserCookies;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,14 +22,16 @@ import static it.dan.AppRunner.userLogin;
 
 public class UserServlet extends HttpServlet {
     private FreeMarkerObject freeMarker;
+    private Connection connection;
 
-    public UserServlet(FreeMarkerObject freeMarker) {
+    public UserServlet(FreeMarkerObject freeMarker, Connection connection) {
+        this.connection = connection;
         this.freeMarker = freeMarker;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Utilits.downloadCookies(req);
+        UserCookies.download(req, connection);
 
 
 
@@ -50,7 +53,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         boolean likeResponse = Boolean.valueOf(req.getParameter("buttonlike"));
-        OpinionDAO opinionDAO = new OpinionDAO();
+        OpinionDAO opinionDAO = new OpinionDAO(connection);
         Person current = persons.get(coef);
 
         Opinion opinion = new Opinion(userLogin, current.getName());

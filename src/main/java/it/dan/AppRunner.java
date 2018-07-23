@@ -1,5 +1,6 @@
 package it.dan;
 
+import it.dan.dao.ConnectionToDB;
 import it.dan.entities.Person;
 import it.dan.servlets.*;
 import it.dan.utilits.FreeMarkerObject;
@@ -10,6 +11,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
+import java.sql.Connection;
 import java.util.*;
 
 
@@ -26,35 +28,18 @@ public class AppRunner {
 //        persons.add( new Person("Rose","Rose", "http://images-hdwallpapers.com/wp-content/uploads/2017/05/Sweet-Girl-image-in-The-Worl-600x375.jpg"));
 //        persons.add( new Person("Kimmy","Kimmy", "https://cdn.pixabay.com/photo/2016/11/16/10/27/girl-1828538__340.jpg"));
 //        persons.add( new Person("Anastasia","Anastasia", "https://pbs.twimg.com/profile_images/739247958340698114/fVKY9fOv.jpg"));
-
-//        String userLogin = "Ilia";
-//        OpinionDAO opinionDAO = new OpinionDAO();
-//        PersonDAO personDAO = new PersonDAO();
-//        persons = personDAO.getOppositeSexPersonList(personDAO.get(userLogin));
-//        List<Opinion> opinions =  opinionDAO.getWatchedByPerson(userLogin);
-//        Set<String> logins = new HashSet<>();
-//        for (Opinion opinion: opinions) {
-//            logins.add(opinion.getWhom());
-//        }
-//        List<Person> newPersons = new ArrayList<>();
-//        for (Person person: persons) {
-//            if (!logins.contains(person.getLogin())) {
-//                newPersons.add(person);
-//            }
-//        }
-//        persons = newPersons;
-
-
         Server serv = new Server(8008);
         ServletContextHandler context = new ServletContextHandler();
 
+        Connection connection = ConnectionToDB.getConnection();
+
         FreeMarkerObject freeMarkerObject = new FreeMarkerObject();
 
-        ServletHolder userHolder = new ServletHolder(new UserServlet(freeMarkerObject));
+        ServletHolder userHolder = new ServletHolder(new UserServlet(freeMarkerObject, connection));
         ServletHolder testHolder = new ServletHolder(new StaticServlet());
-        ServletHolder likedHolder = new ServletHolder(new LikedServlet(freeMarkerObject));
-        ServletHolder chatHolder = new ServletHolder(new ChatServlet(freeMarkerObject));
-        ServletHolder loginHolder = new ServletHolder(new LoginServlet());
+        ServletHolder likedHolder = new ServletHolder(new LikedServlet(freeMarkerObject, connection));
+        ServletHolder chatHolder = new ServletHolder(new ChatServlet(freeMarkerObject, connection));
+        ServletHolder loginHolder = new ServletHolder(new LoginServlet(connection));
 
         Filter loginFilter = new LoginFilter();
         FilterHolder loginFIlterHolder = new FilterHolder(loginFilter);
