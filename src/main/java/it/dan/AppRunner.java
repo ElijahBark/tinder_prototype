@@ -28,7 +28,9 @@ public class AppRunner {
 //        persons.add( new Person("Rose","Rose", "http://images-hdwallpapers.com/wp-content/uploads/2017/05/Sweet-Girl-image-in-The-Worl-600x375.jpg"));
 //        persons.add( new Person("Kimmy","Kimmy", "https://cdn.pixabay.com/photo/2016/11/16/10/27/girl-1828538__340.jpg"));
 //        persons.add( new Person("Anastasia","Anastasia", "https://pbs.twimg.com/profile_images/739247958340698114/fVKY9fOv.jpg"));
-        Server serv = new Server(8008);
+        String port = null;
+        port = args.length > 0 ? args[0] : "8008";
+        Server serv = new Server(Integer.parseInt(port));
         ServletContextHandler context = new ServletContextHandler();
 
         Connection connection = ConnectionToDB.getConnection();
@@ -39,7 +41,7 @@ public class AppRunner {
         ServletHolder testHolder = new ServletHolder(new StaticServlet());
         ServletHolder likedHolder = new ServletHolder(new LikedServlet(freeMarkerObject, connection));
         ServletHolder chatHolder = new ServletHolder(new ChatServlet(freeMarkerObject, connection));
-        ServletHolder loginHolder = new ServletHolder(new LoginServlet(connection));
+        ServletHolder loginHolder = new ServletHolder(new LoginServlet(freeMarkerObject, connection));
 
         Filter loginFilter = new LoginFilter();
         FilterHolder loginFIlterHolder = new FilterHolder(loginFilter);

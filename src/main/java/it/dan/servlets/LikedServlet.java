@@ -48,7 +48,7 @@ public class LikedServlet extends HttpServlet {
         model.put("items", persons);
         Writer out = resp.getWriter();
 
-        freeMarker.run(model,"people-list.html", out);
+        freeMarker.run(model,"people-list.html", out, this.getClass());
     }
 
     @Override

@@ -3,6 +3,7 @@ package it.dan.servlets;
 import it.dan.AppRunner;
 import it.dan.dao.PersonDAO;
 import it.dan.entities.Person;
+import it.dan.utilits.FreeMarkerObject;
 import it.dan.utilits.PersonsForUser;
 import org.apache.commons.io.FileUtils;
 
@@ -13,20 +14,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LoginServlet extends HttpServlet {
     private Connection connection;
+    private FreeMarkerObject freeMarker;
 
-    public LoginServlet(Connection connection) {
+    public LoginServlet(FreeMarkerObject freeMarker , Connection connection) {
         this.connection = connection;
+        this.freeMarker = freeMarker;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String out = FileUtils.readFileToString(new File("resources/login.html"),"UTF-8");
-        resp.getWriter().print(out);
+        Map<String, Object> model = new HashMap<>();
+        Writer out = resp.getWriter();
+
+        freeMarker.run(model,"login.html", out, this.getClass());
     }
 
     @Override

@@ -51,7 +51,7 @@ public class ChatServlet extends HttpServlet {
 
         Writer out = resp.getWriter();
 
-        freeMarker.run(model,"chat.html", out);
+        freeMarker.run(model,"chat.html", out, this.getClass());
     }
 
     @Override

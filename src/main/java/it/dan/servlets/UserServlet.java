@@ -46,7 +46,7 @@ public class UserServlet extends HttpServlet {
 
             Writer out = resp.getWriter();
 
-            freeMarker.run(model,"like-page.html", out);
+            freeMarker.run(model,"like-page.html", out, this.getClass());
         }
     }
 
